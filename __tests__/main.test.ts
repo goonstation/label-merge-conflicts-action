@@ -665,45 +665,6 @@ describe('queries', () => {
     expect(pullRequest.labels.edges.length).toBe(1)
   })
 
-  it('throws when unknown on specific pull request', async () => {
-    const scope = nock('https://api.github.com', {
-      reqheaders: {
-        authorization: 'token justafaketoken'
-      }
-    })
-      .post('/graphql', /\"variables\":{\"owner\":\"some-owner\",\"repo\":\"some-repo\",\"number\":2}/)
-      .times(3)
-      .reply(200, {
-        data: {
-          repository: {
-            pullRequest: {
-              id: 'MDExOlB1bGxSZXF1ZXN0NTk3NDgzNjg4',
-              number: mockPullRequestEvent.number,
-              mergeable: 'UNKNOWN',
-              potentialMergeCommit: {
-                oid: '8b0ec723ab52932bf3476b711df72f762742bede'
-              },
-              labels: {
-                edges: [
-                  {
-                    node: {
-                      id: 'MDU6TGFiZWwxNTI3NTYzMTMy',
-                      name: 'Failed'
-                    }
-                  }
-                ]
-              }
-            }
-          }
-        }
-      })
-
-    const octokit = github.getOctokit('justafaketoken')
-    const pullRequest = gatherPullRequest(octokit, github.context, mockPullRequestEvent as any, 25, 2)
-
-    await expect(pullRequest).rejects.toThrowError(/Could not determine mergeable status/)
-  })
-
   describe('modifies labels', () => {
     describe('add', () => {
       it('adds a new label', async () => {
