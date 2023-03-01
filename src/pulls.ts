@@ -33,7 +33,7 @@ export async function gatherPullRequest(
   } while (uknownStatus && maxRetries >= tries)
 
   if (uknownStatus) {
-    core.notice(`Could not determine mergeable status for: #${prEvent.number}`);
+    core.notice(`Could not determine mergeable status for: #${prEvent.number}`)
   }
 
   return pullRequest
